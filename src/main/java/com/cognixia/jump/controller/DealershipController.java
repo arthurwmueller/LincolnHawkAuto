@@ -71,4 +71,28 @@ public class DealershipController {
 		return allVehicles;
 	}
 	
+	@PostMapping("/vehicle")
+	public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle){
+		Vehicle created = vehicleService.createVehicle(vehicle);
+		return ResponseEntity.status(201).body(created);
+	}
+	
+	@GetMapping("vehicle/{id}")
+	public ResponseEntity<?> getVehicleById(@PathVariable String id) throws ResourceNotFoundException{
+		Vehicle found = vehicleService.getVehicleById(id);
+		return ResponseEntity.status(200).body(found);
+	}
+	
+	@DeleteMapping("/vehicle/{id}")
+	public ResponseEntity<?> deleteVehicleById(@PathVariable String id) throws ResourceNotFoundException{
+		Vehicle deleted = vehicleService.deleteByVehicleId(id);
+		return ResponseEntity.status(200).body(deleted);
+	}
+	
+	@PutMapping("/vehicle")
+	public ResponseEntity<?> updateVehicleById(@RequestBody Vehicle vehicle) throws ResourceNotFoundException{
+		Vehicle updated = vehicleService.updateVehicle(vehicle);
+		return ResponseEntity.status(200).body(updated);
+	}
+	
 }

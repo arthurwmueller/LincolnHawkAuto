@@ -39,6 +39,8 @@ public class Vehicle {
 	
 	private String description;
 	
+	private String image;
+	
 	private String location;
 	
 	private Boolean sold;
@@ -51,7 +53,7 @@ public class Vehicle {
 
 	public Vehicle(String id, String make, String model, String trim, String color,
 			@Range(min = 1900, max = 2023) Integer year, String bodyType, Integer mpg, Boolean allWheelDrive,
-			Long price, Integer horsepower, Integer towing, Boolean sunroof, Integer capacity, String description, String location,
+			Long price, Integer horsepower, Integer towing, Boolean sunroof, Integer capacity, String description,String image, String location,
 			Boolean sold, Integer customer) {
 		super();
 		this.id = id;
@@ -69,6 +71,7 @@ public class Vehicle {
 		this.sunroof = sunroof;
 		this.capacity=capacity;
 		this.description = description;
+		this.image=image;
 		this.location = location;
 		this.sold = sold;
 		this.customer = customer;
@@ -184,6 +187,14 @@ public class Vehicle {
 
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public String getDescription() {
