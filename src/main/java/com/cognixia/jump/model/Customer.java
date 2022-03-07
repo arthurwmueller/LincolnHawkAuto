@@ -6,27 +6,68 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
-import org.springframework.data.annotation.Id;
 
 @Entity
 public class Customer implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable=false)
+	@Column(nullable = false, unique=true)
 	private String email;
-	@Size(min=8,max=64)
-	@Column(nullable=false)
+	@Size(min = 8, max = 64)
+	@Column(nullable = false)
 	private String password;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String name;
-	
+
+	public Customer() {
+
+	}
+
+	public Customer(Integer id, String email, @Size(min = 8, max = 64) String password, String name) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }
