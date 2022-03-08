@@ -26,7 +26,7 @@ public class MyUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException(email);
 		}
 		Customer customer = found.get();
-		return new User(customer.getEmail(),customer.getPassword(),new ArrayList<>());
+		return new MyUserDetails(customer);
 	}
 
 }

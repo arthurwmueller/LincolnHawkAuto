@@ -14,6 +14,10 @@ import javax.validation.constraints.Size;
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static enum Role {
+		ROLE_CUSTOMER, ROLE_ADMIN
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,17 +29,23 @@ public class Customer implements Serializable {
 	private String password;
 	@Column(nullable = false)
 	private String name;
+	
+	private boolean enabled;
+	
+	private Role role;
 
 	public Customer() {
-
+		
 	}
 
-	public Customer(Integer id, String email, @Size(min = 8, max = 64) String password, String name) {
+	public Customer(Integer id, String email, @Size(min = 8, max = 64) String password, String name, Role role, boolean enabled) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.name = name;
+		this.role=role;
+		this.enabled=enabled;
 	}
 
 	public Integer getId() {
@@ -69,5 +79,23 @@ public class Customer implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	
+	
 
 }
