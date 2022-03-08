@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cognixia.jump.exception.ResourceNotFoundException;
@@ -16,6 +17,9 @@ public class CustomerService {
 	@Autowired
 	CustomerRepository repo;
 	
+	@Autowired
+	PasswordEncoder encoder;
+	
 	public List<Customer> getAllCustomers(){
 		return repo.findAll();
 	}
@@ -23,6 +27,7 @@ public class CustomerService {
 	public Customer createCustomer(Customer customer) {
 
 		customer.setId(null);
+		customer.setPassword(encoder.encode(customer.getPassword()));
 		Customer created = repo.save(customer);
 		return created;
 		

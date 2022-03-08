@@ -15,7 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtUtil {
 
-	private final String SECRET_KEY = "ott";
+	private final String SECRET_KEY = "overTheTop";
 
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -48,7 +48,7 @@ public class JwtUtil {
 
 	private String createToken(Map<String, Object> claims, String subject) {
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 	}
 
