@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.cognixia.jump.exception.ResourceNotFoundException;
+import com.cognixia.jump.model.Customer;
+import com.cognixia.jump.model.Customer.Role;
 import com.cognixia.jump.model.Vehicle;
 import com.cognixia.jump.repository.VehicleRepository;
 
@@ -15,6 +18,9 @@ public class VehicleService {
 	
 	@Autowired
 	VehicleRepository repo;
+	
+	@Autowired
+	CustomerService customerService;
 
 	public List<Vehicle> getAllVehicles() {
 		
@@ -23,6 +29,8 @@ public class VehicleService {
 
 	public Vehicle createVehicle(Vehicle vehicle) {
 		vehicle.setId(null);
+		vehicle.setCustomer(null);
+		vehicle.setSold(false);
 		Vehicle created = repo.save(vehicle);
 		return created;
 	}
@@ -70,6 +78,25 @@ public class VehicleService {
 		updated.setCustomer(vehicle.getCustomer());
 		repo.save(updated);
 		return updated;
+	}
+
+	public Vehicle purchaseVehicle(Customer customer, Vehicle vehicle) throws ResourceNotFoundException {
+		if(vehicle.getSold()) {
+			throw new ResourceNotFoundException("Sorry, this car has already been purchased");
+		}
+		vehicle.setSold(true);
+		vehicle.setCustomer(customer.getId());
+		repo.save(vehicle);
+		return vehicle;
+	}
+
+	public List<Vehicle> getCarsByCustomer(UserDetails userDetails, int id) throws ResourceNotFoundException {
+		String email = userDetails.getUsername();
+		Customer customer = customerService.getCustomerByEmail(email);
+		if(customer.getId()==id||customer.getRole()==Role.ROLE_ADMIN) {
+			return repo.findByCustomer(id);
+		}
+		return null;
 	}
 
 }

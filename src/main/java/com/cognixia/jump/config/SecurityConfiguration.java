@@ -36,8 +36,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.csrf().disable().authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/api/customer").permitAll()
 			.antMatchers(HttpMethod.POST,"/api/authenticate").permitAll()
+			.antMatchers("/swagger-ui/**").permitAll()
+			.antMatchers("/v3/api-docs/").permitAll()
 			.antMatchers(HttpMethod.GET, "/api/vehicle").hasAnyRole("CUSTOMER","ADMIN")
 			.antMatchers(HttpMethod.GET, "/api/vehicle/**").hasAnyRole("CUSTOMER","ADMIN")
+			.antMatchers(HttpMethod.PATCH,"/api/vehicle/**").hasAnyRole("CUSTOMER","ADMIN")
+			.antMatchers(HttpMethod.GET,"/api/vehicle/customer/**").hasAnyRole("CUSTOMER","ADMIN")
 			.antMatchers("/**").hasRole("ADMIN")
 			.anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -52,4 +56,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+	
 }

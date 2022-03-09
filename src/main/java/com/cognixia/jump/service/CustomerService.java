@@ -71,4 +71,12 @@ public class CustomerService {
 		return updated;
 	}
 
+	public Customer getCustomerByEmail(String email) throws ResourceNotFoundException {
+		Optional<Customer> found = repo.findByEmail(email);
+		if (found.isEmpty()) {
+			throw new ResourceNotFoundException("Customer with email = " + email + " not found");
+		}
+		return found.get();
+	}
+
 }

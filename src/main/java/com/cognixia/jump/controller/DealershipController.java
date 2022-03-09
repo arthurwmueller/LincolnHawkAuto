@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,7 +38,7 @@ public class DealershipController {
 
 	@Autowired
 	UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	JwtUtil jwtUtil;
 
@@ -48,7 +50,7 @@ public class DealershipController {
 
 	@GetMapping("/test")
 	public ResponseEntity<?> test() {
-		return ResponseEntity.status(200).body("You have reached the api");
+		return ResponseEntity.status(200).body("You have reached the Lincoln Hawk Auto api");
 	}
 
 	@PostMapping("/customer")
@@ -122,6 +124,23 @@ public class DealershipController {
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 		final String jwt = jwtUtil.generateTokens(userDetails);
 		return ResponseEntity.status(201).body(new AuthenticationResponse(jwt));
+	}
+
+	@PatchMapping("/vehicle/{id}/buy")
+	public ResponseEntity<?> buyCar(@PathVariable String id) throws ResourceNotFoundException {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+		Customer customer = customerService.getCustomerByEmail(email);
+		Vehicle vehicle = vehicleService.getVehicleById(id);
+		Vehicle purchased = vehicleService.purchaseVehicle(customer,vehicle);
+		return ResponseEntity.status(200).body(purchased);
+	}
+	
+	@GetMapping("/vehicle/customer/{id}")
+	public List<Vehicle> getCarsByCustomer(@PathVariable int id) throws ResourceNotFoundException{
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<Vehicle> customerVehicles=vehicleService.getCarsByCustomer(userDetails, id);
+		return customerVehicles;
 	}
 
 }
