@@ -29,8 +29,11 @@ import com.cognixia.jump.service.CustomerService;
 import com.cognixia.jump.service.VehicleService;
 import com.cognixia.jump.util.JwtUtil;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RequestMapping("/api")
 @RestController
+@Tag(name="Lincoln Hawk Automotive Group", description = "API for interacting with the Lincoln Hawk Automotive Group's inventory")
 public class DealershipController {
 
 	@Autowired
