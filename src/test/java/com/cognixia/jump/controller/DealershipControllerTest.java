@@ -1,27 +1,26 @@
 package com.cognixia.jump.controller;
 
-
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,38 +43,23 @@ public class DealershipControllerTest {
 	private VehicleService vehicleService;
 	@InjectMocks
 	private DealershipController controller;
-	@Autowired
+	@MockBean
 	AuthenticationManager authenticationManager;
-
-	@Autowired
+	@MockBean
 	UserDetailsService userDetailsService;
-
 	@MockBean
 	JwtUtil jwtUtil;
 
+	@WithMockUser(value = "test@Test.com")
 	@Test
-	void testGetAllCustomers() throws Exception {
+	void testCreateCustomer() throws Exception {
 		String uri = STARTING_URI + "/customer";
-		List<Customer> allCustomers = Arrays.asList(
-				new Customer(1, "compliance@OleMiss.edu", "password", "Hugh Freeze", Role.ROLE_CUSTOMER, true),
-				new Customer(2, "test@test.com", "password", "Test Person", Role.ROLE_CUSTOMER, true));
-		when(customerService.getAllCustomers()).thenReturn(allCustomers);
-		mvc.perform(get(uri)).andDo(print()).andExpect(status().isOk())
-			.andExpect(jsonPath("$.length()").value(allCustomers.size()))
-			.andExpect(jsonPath("$[0].id").value(allCustomers.get(0).getId()))
-			.andExpect(jsonPath("$[0].email").value(allCustomers.get(0).getEmail()))
-			.andExpect(jsonPath("$[0].password").value(allCustomers.get(0).getPassword()))
-			.andExpect(jsonPath("$[0].name").value(allCustomers.get(0).getName()))
-			.andExpect(jsonPath("$[0].role").value(allCustomers.get(0).getRole()))
-			.andExpect(jsonPath("$[0].enabled").value(allCustomers.get(0).isEnabled()))
-			.andExpect(jsonPath("$[1].id").value(allCustomers.get(1).getId()))
-			.andExpect(jsonPath("$[1].email").value(allCustomers.get(1).getEmail()))
-			.andExpect(jsonPath("$[1].password").value(allCustomers.get(1).getPassword()))
-			.andExpect(jsonPath("$[1].name").value(allCustomers.get(1).getName()))
-			.andExpect(jsonPath("$[1].role").value(allCustomers.get(1).getRole()))
-			.andExpect(jsonPath("$[1].enabled").value(allCustomers.get(1).isEnabled()));
-		verify(customerService,times(1)).getAllCustomers();
-		verifyNoInteractions(customerService);
+		Customer customer = new Customer(-1, "test@test.com", "password", "Test Person", Role.ROLE_CUSTOMER, true);
+		when(customerService.createCustomer(Mockito.any(Customer.class))).thenReturn(customer);
+		mvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON_VALUE)).andDo(print())
+				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+		verify(customerService, times(1)).createCustomer(customer);
+		verifyNoMoreInteractions(customerService);
 	}
 
 }
